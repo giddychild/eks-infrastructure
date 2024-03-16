@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket = "srcd-mlops-aws-tfstate"
-    key    = "terraform/srcd-mlops-aws-infra/state"
+    bucket = "seyi-eks-project"
+    key    = "eks/eks-infrastructure/state"
     region = "us-east-1"
   }
 }
