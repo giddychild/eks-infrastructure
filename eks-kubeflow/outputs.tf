@@ -1,16 +1,13 @@
 output "vpc_id" {
-  description = "The ID of the VPC"
-  value       = module.vpc.vpc_id
+  value = aws_vpc.main.id
 }
 
-output "vpc_private_subnets" {
-  description = "List of IDs of private subnets"
-  value       = module.vpc.private_subnets
+output "public_subnet_ids" {
+  value = aws_subnet.public[*].id
 }
 
-output "vpc_public_subnets_cidr_blocks" {
-  description = "List of cidr_blocks of public subnets"
-  value       = module.vpc.public_subnets_cidr_blocks
+output "private_subnet_ids" {
+  value = aws_subnet.private[*].id
 }
 
 # output "wg_security_group_id" {
