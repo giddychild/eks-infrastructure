@@ -13,7 +13,7 @@ output "vpc_public_subnets_cidr_blocks" {
   value       = module.vpc.public_subnets_cidr_blocks
 }
 
-output "wg_security_group_id" {
-  description = "The ID of the security group"
-  value       = resource.aws_security_group.wireguard_sg.id
-}
+# output "wg_security_group_id" {
+#   description = "The ID of the security group"
+#   value       = resource.aws_security_group.wireguard_sg.id
+# }

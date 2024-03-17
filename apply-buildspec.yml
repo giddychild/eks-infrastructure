@@ -13,8 +13,8 @@ phases:
   pre_build:
     commands:
       - cd ${CODEBUILD_SRC_DIR}/${CODE_SRC_DIR}
-      - export WG_PUBLIC_KEY=$(aws secretsmanager get-secret-value --secret-id wg-public-key --query SecretString --output text | jq -r .WG_PUBLIC_KEY)
-      - export WG_PRIVATE_KEY=$(aws secretsmanager get-secret-value --secret-id wg-private-key --query SecretString --output text | jq -r .WG_PRIVATE_KEY)
+      # - export WG_PUBLIC_KEY=$(aws secretsmanager get-secret-value --secret-id wg-public-key --query SecretString --output text | jq -r .WG_PUBLIC_KEY)
+      # - export WG_PRIVATE_KEY=$(aws secretsmanager get-secret-value --secret-id wg-private-key --query SecretString --output text | jq -r .WG_PRIVATE_KEY)
       - export KEYCLOAK_USER_PASSWORD=$(aws secretsmanager get-secret-value --secret-id keycloak-secret --query SecretString --output text | jq -r .KEYCLOAK_USER_PASSWORD)
       - cd eks-kubeflow
       - terraform init -reconfigure
