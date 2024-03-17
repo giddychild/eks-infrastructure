@@ -7,11 +7,8 @@ module "vpc" {
 
   azs              = local.azs
   private_subnets  = local.private_subnets
-  private_subnet_names = local.private_subnet_names
   public_subnets   = local.public_subnets
-  public_subnet_names = local.public_subnet_names
   database_subnets = local.db_subnets
-  database_subnet_names = local.db_subnet_names
 
   create_database_subnet_group = true
 
@@ -22,13 +19,13 @@ module "vpc" {
   enable_dns_support   = true
   
   public_subnet_tags = {
-    Name = local.public_subnet_names
+    Name = "dev-eks-public-subnet"
   }
   private_subnet_tags = {
-    Name = local.private_subnet_names
+    Name = "dev-eks-private-subnet"
   }
   database_subnet_tags = {
-    Name = local.db_subnet_names
+    Name = "dev-eks-db-subnet"
   }
 
   tags = {
