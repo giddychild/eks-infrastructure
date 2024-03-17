@@ -45,13 +45,11 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
+#   create_database_subnet_group = true
+
 resource "aws_eip" "nat1" {
   domain = "vpc"
 }
-
-# resource "aws_eip" "nat2" {
-#   domain = "vpc"
-# }
 
 resource "aws_nat_gateway" "nat1" {
   allocation_id = aws_eip.nat1.id
@@ -60,16 +58,6 @@ resource "aws_nat_gateway" "nat1" {
     Name = "EKS-NAT1"
   }
 }
-
-# resource "aws_nat_gateway" "nat2" {
-#   allocation_id = aws_eip.nat2.id
-#   subnet_id = aws_subnet.public[1].id
-#   tags = {
-#     Name = "EKS-NAT2"
-#   }
-# }
-
-#   create_database_subnet_group = true
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
@@ -99,6 +87,24 @@ resource "aws_route_table" "private_az1" {
   }
 }
 
+resource "aws_route_table_association" "private_az1" {
+  count          = length([for s in aws_subnet.private : s.id if s.availability_zone == "us-east-1a"])
+  subnet_id      = [for s in aws_subnet.private : s.id if s.availability_zone == "us-east-1a"][count.index]
+  route_table_id = aws_route_table.private_az1.id
+}
+
+# resource "aws_eip" "nat2" {
+#   domain = "vpc"
+# }
+
+# resource "aws_nat_gateway" "nat2" {
+#   allocation_id = aws_eip.nat2.id
+#   subnet_id = aws_subnet.public[1].id
+#   tags = {
+#     Name = "EKS-NAT2"
+#   }
+# }
+
 # resource "aws_route_table" "private_az2" {
 #   vpc_id = aws_vpc.main.id
 #   route {
@@ -109,12 +115,6 @@ resource "aws_route_table" "private_az1" {
 #     Name = "EKS-PrivateRouteTable-AZ2"
 #   }
 # }
-
-resource "aws_route_table_association" "private_az1" {
-  count          = length([for s in aws_subnet.private : s.id if s.availability_zone == "us-east-1a"])
-  subnet_id      = [for s in aws_subnet.private : s.id if s.availability_zone == "us-east-1a"][count.index]
-  route_table_id = aws_route_table.private_az1.id
-}
 
 # resource "aws_route_table_association" "private_az2" {
 #   count          = length([for s in aws_subnet.private : s.id if s.availability_zone == "us-east-1b"])
@@ -147,14 +147,12 @@ resource "aws_security_group" "ecr_sg" {
   name        = "ecr_sg"
   description = "Allow inbound traffic for ECR endpoint"
   vpc_id      = aws_vpc.main.id
-
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["10.0.16.0/20"]
   }
-
   egress {
     from_port   = 0
     to_port     = 0
