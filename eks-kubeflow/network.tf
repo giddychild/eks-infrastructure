@@ -20,7 +20,16 @@ module "vpc" {
 
   enable_dns_hostnames = true
   enable_dns_support   = true
-
+  
+  public_subnet_tags = {
+    Name = local.public_subnet_names
+  }
+  private_subnet_tags = {
+    Name = local.private_subnet_names
+  }
+  database_subnet_tags = {
+    Name = local.db_subnet_names
+  }
 
   tags = {
     Environment = "${var.environment}"
