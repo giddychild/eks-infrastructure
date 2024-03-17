@@ -71,6 +71,57 @@ resource "aws_nat_gateway" "nat1" {
 
 #   create_database_subnet_group = true
 
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+  tags = {
+    Name = "EKS-PublicRouteTable"
+  }
+}
+
+resource "aws_route_table_association" "public" {
+  count = length(aws_subnet.public)
+  subnet_id = aws_subnet.public[count.index].id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table" "private_az1" {
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat1.id
+  }
+  tags = {
+    Name = "EKS-PrivateRouteTable-AZ1"
+  }
+}
+
+resource "aws_route_table" "private_az2" {
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat2.id
+  }
+  tags = {
+    Name = "EKS-PrivateRouteTable-AZ2"
+  }
+}
+
+resource "aws_route_table_association" "private_az1" {
+  count          = length([for s in aws_subnet.private : s.id if s.availability_zone == "us-east-1a"])
+  subnet_id      = [for s in aws_subnet.private : s.id if s.availability_zone == "us-east-1a"][count.index]
+  route_table_id = aws_route_table.private_az1.id
+}
+
+resource "aws_route_table_association" "private_az2" {
+  count          = length([for s in aws_subnet.private : s.id if s.availability_zone == "us-east-1b"])
+  subnet_id      = [for s in aws_subnet.private : s.id if s.availability_zone == "us-east-1b"][count.index]
+  route_table_id = aws_route_table.private_az2.id
+}
+
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = aws_vpc.main.id
   service_name = "com.amazonaws.${local.region}.s3"
@@ -111,3 +162,4 @@ resource "aws_security_group" "ecr_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
