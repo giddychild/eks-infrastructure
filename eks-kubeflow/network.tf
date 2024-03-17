@@ -7,8 +7,11 @@ module "vpc" {
 
   azs              = local.azs
   private_subnets  = local.private_subnets
+  private_subnet_names = local.private_subnet_names
   public_subnets   = local.public_subnets
+  public_subnet_names = local.public_subnet_names
   database_subnets = local.db_subnets
+  database_subnet_names = local.db_subnet_names
 
   create_database_subnet_group = true
 
@@ -22,15 +25,15 @@ module "vpc" {
   #   "kubernetes.io/role/internal-elb" = "1"
   # }
 
-  private_subnet_tags = {
-    "Name" = "eks-private-subnet-${each.key}"
-  }
-  public_subnet_tags = {
-    "Name" = "eks-public-subnet-${each.key}"
-  }
-  database_subnet_tags = {
-    "Name" = "eks-db-subnet-${each.key}"
-  }
+  # private_subnet_tags = {
+  #   "Name" = "eks-private-subnet-${each.key}"
+  # }
+  # public_subnet_tags = {
+  #   "Name" = "eks-public-subnet-${each.key}"
+  # }
+  # database_subnet_tags = {
+  #   "Name" = "eks-db-subnet-${each.key}"
+  # }
 
   tags = {
     Environment = "${var.environment}"
