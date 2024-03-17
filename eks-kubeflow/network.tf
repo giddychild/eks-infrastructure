@@ -31,7 +31,7 @@ resource "aws_subnet" "private" {
 resource "aws_subnet" "db" {
   count = length(local.db_subnets)
   vpc_id = aws_vpc.main.id
-  cidr_block = localocal.db_subnets[count.index]
+  cidr_block = local.db_subnets[count.index]
   availability_zone = element(local.azs, count.index)
   tags = {
     Name = "EKS-DBSubnet-${count.index + 1}"
@@ -80,15 +80,15 @@ resource "aws_vpc_endpoint" "ecr_api" {
   vpc_id             = aws_vpc.main.id
   service_name       = "com.amazonaws.${local.region}.ecr.api"
   vpc_endpoint_type  = "Interface"
-  subnet_ids         = aws_subnet.private_subnets.id
+  subnet_ids         = aws_subnet.private.id
   security_group_ids = [aws_security_group.ecr_sg.id]
 }
 
 resource "aws_vpc_endpoint" "ecr_dkr" {
-  vpc_id             = module.vpc.vpc_id
+  vpc_id             = aws_vpc.main.id
   service_name       = "com.amazonaws.${local.region}.ecr.dkr"
   vpc_endpoint_type  = "Interface"
-  subnet_ids         = aws_subnet.private_subnets.id
+  subnet_ids         = aws_subnet.private.id
   security_group_ids = [aws_security_group.ecr_sg.id]
 }
 
