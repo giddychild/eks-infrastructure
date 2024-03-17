@@ -28,7 +28,7 @@ resource "aws_subnet" "private" {
   }
 }
 
-resource "aws_subnet" "private" {
+resource "aws_subnet" "db" {
   count = length(local.db_subnets)
   vpc_id = aws_vpc.main.id
   cidr_block = localocal.db_subnets[count.index]
