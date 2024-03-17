@@ -18,8 +18,18 @@ module "vpc" {
   enable_dns_hostnames = true
   enable_dns_support   = true
 
+  # private_subnet_tags = {
+  #   "kubernetes.io/role/internal-elb" = "1"
+  # }
+
   private_subnet_tags = {
-    "kubernetes.io/role/internal-elb" = "1"
+    "Name" = "eks-private-subnet-${each.key}"
+  }
+  public_subnet_tags = {
+    "Name" = "eks-public-subnet-${each.key}"
+  }
+  database_subnet_tags = {
+    "Name" = "eks-db-subnet-${each.key}"
   }
 
   tags = {
